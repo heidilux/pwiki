@@ -1,0 +1,7 @@
+/.idea
+/vendor
+/storage/database.sqlite
+/bootstrap/compiled.php
+.env
+
+
