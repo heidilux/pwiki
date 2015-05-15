@@ -32,7 +32,7 @@ class WikiController extends Controller {
     {
         $filePath = '/';
         $page = $this->pages->landingPage();
-        $links = $this->pages->getPageLinks($this->pages);
+        $links = $this->pages->getPageLinks();
         $urls = $this->pages->getLinkUrls();
 
         Session::put('url', '/');

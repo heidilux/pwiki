@@ -1,5 +1,6 @@
 <?php namespace jdpike;
 
+use Illuminate\Contracts\Filesystem\Factory as FileSystem;
 use jdpike\CustomMarkdown as Markdown;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,13 +12,20 @@ class PageRepository {
      * @var string
      */
     protected $dataPath;
+    /**
+     * @var FileSystem|Illuminate\Contracts\Filesystem\Factory
+     */
+    private $fs;
+
 
     /**
      * Set the base path when instantiating
+     * @param FileSystem|Illuminate\Contracts\Filesystem\Factory $fs
      */
-    public function __construct()
+    public function __construct(FileSystem $fs)
     {
-        $this->dataPath = base_path() . '/wiki';
+        $this->dataPath = storage_path() . '/wiki';
+        $this->fs = $fs;
     }
 
     /**
@@ -101,11 +109,9 @@ class PageRepository {
      * @param string $directory
      * @return array
      */
-    public function getPageLinks($directory = '')
+    public function getPageLinks($directory = null)
     {
-        $path = $this->getDataPath();
-
-        $directoryNames = $this->getSubdirectories($path);
+        $directoryNames = $this->getSubdirectories($directory);
         //dd($directoryNames);
 
         $links = $this->createLinkAttributes($directoryNames);
@@ -162,15 +168,14 @@ class PageRepository {
     /**
      * Get an array of immediate subdirectories
      *
-     * @param $directory
+     * @param $path
      * @return array
      */
     private function getSubdirectories($path)
     {
-
+        //dd($path);
         $titles = Storage::directories($path);
         //dd($titles);
-
         $newLinks = [];
         foreach ($titles as $k => $title) {
             $newLinks[$k] = explode('/', $title);
